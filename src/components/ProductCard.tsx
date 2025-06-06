@@ -11,28 +11,25 @@ import {
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { Product } from "@/app/types/product";
+import { Product } from "@/types/product";
+import { observer } from "mobx-react-lite";
+import { cartStore } from "@/stores/cartStore";
 
 interface ProductCardProps {
   title: string;
   subtitle: string;
   price: number;
   image: Product["image"];
-  quantity: number;
-  onAdd: () => void;
-  onRemove: () => void;
 }
 
-export default function ProductCard({
+const ProductCard = ({
   title,
   subtitle,
   price,
   image,
-  quantity,
-  onAdd,
-  onRemove,
-}: ProductCardProps) {
+}: ProductCardProps) => {
   const getImagePath = (path: string) => path.replace("./assets", "/assets");
+  const quantity = cartStore.cart.find((item) => item.name === title)?.quantity || 0;
 
   return (
     <Card
@@ -61,19 +58,12 @@ export default function ProductCard({
               borderRadius: 4,
               boxSizing: "border-box",
               zIndex: 1,
-              pointerEvents: "none",
             }}
           />
         )}
         <picture>
-          <source
-            media="(min-width: 1024px)"
-            srcSet={getImagePath(image.desktop)}
-          />
-          <source
-            media="(min-width: 600px)"
-            srcSet={getImagePath(image.tablet)}
-          />
+          <source media="(min-width: 1024px)" srcSet={getImagePath(image.desktop)} />
+          <source media="(min-width: 600px)" srcSet={getImagePath(image.tablet)} />
           <img
             src={getImagePath(image.mobile)}
             alt={title}
@@ -81,7 +71,7 @@ export default function ProductCard({
               width: "100%",
               height: "100%",
               objectFit: "cover",
-              borderRadius: 8,
+              borderRadius: 16,
             }}
           />
         </picture>
@@ -90,12 +80,13 @@ export default function ProductCard({
           <Button
             variant="outlined"
             startIcon={<AddShoppingCartIcon />}
-            onClick={onAdd}
+            onClick={() => cartStore.addToCart({ name: title, price })}
             sx={{
               position: "absolute",
               bottom: -15,
               left: "50%",
               transform: "translateX(-50%)",
+              textTransform: "none",
               borderRadius: 999,
               color: "hsl(14, 86%, 42%)",
               borderColor: "hsl(14, 86%, 42%)",
@@ -108,6 +99,7 @@ export default function ProductCard({
                 backgroundColor: "hsl(14, 86%, 42%)",
                 color: "#fff",
               },
+              zIndex: 2,
             }}
           >
             Add to Cart
@@ -125,29 +117,24 @@ export default function ProductCard({
               borderRadius: 999,
               px: 1.5,
               height: 36,
-              zIndex: 3, 
+              zIndex: 3,
               backgroundColor: "hsl(14, 86%, 42%)",
             }}
           >
-            <IconButton onClick={onRemove} sx={{ color: "#fff", p: 0.5, mr: 1 }}>
+            <IconButton onClick={() => cartStore.decrease(title)} sx={{ color: "#fff", p: 0.5, mr: 1 }}>
               <RemoveIcon fontSize="small" />
             </IconButton>
             <Typography color="#fff" fontWeight={500} fontSize={14}>
               {quantity}
             </Typography>
-            <IconButton onClick={onAdd} sx={{ color: "#fff", p: 0.5, ml: 1 }}>
+            <IconButton onClick={() => cartStore.addToCart({ name: title, price })} sx={{ color: "#fff", p: 0.5, ml: 1 }}>
               <AddIcon fontSize="small" />
             </IconButton>
           </Box>
         )}
       </Box>
 
-      <CardContent
-        sx={{
-          p: 1.5,
-          pt: 3,    
-        }}
-      >
+      <CardContent sx={{ p: 1.5, pt: 3 }}>
         <Stack spacing={0.25}>
           <Typography color="hsl(12, 20%, 44%)" sx={{ fontSize: 12 }}>
             {subtitle}
@@ -155,11 +142,11 @@ export default function ProductCard({
           <Typography fontWeight={700} sx={{ fontSize: 14 }}>
             {title}
           </Typography>
-          <Typography color="hsl(14, 86%, 42%)">
-            ${price.toFixed(2)}
-          </Typography>
+          <Typography color="hsl(14, 86%, 42%)">${price.toFixed(2)}</Typography>
         </Stack>
       </CardContent>
     </Card>
   );
-}
+};
+
+export default observer(ProductCard);

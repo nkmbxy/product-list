@@ -98,6 +98,7 @@ export default function OrderSummaryModal({
           fullWidth
           onClick={onReset}
           sx={{
+            textTransform: "none",
             borderRadius: 999,
             backgroundColor: "hsl(14, 86%, 42%)",
             color: "#fff",
