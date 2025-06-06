@@ -49,6 +49,22 @@ export default function ProductCard({
       }}
     >
       <Box sx={{ position: "relative", width: "100%", height: 200 }}>
+        {quantity > 0 && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              border: "2px solid hsl(14, 86%, 42%)",
+              borderRadius: 4,
+              boxSizing: "border-box",
+              zIndex: 1,
+              pointerEvents: "none",
+            }}
+          />
+        )}
         <picture>
           <source
             media="(min-width: 1024px)"
@@ -77,7 +93,7 @@ export default function ProductCard({
             onClick={onAdd}
             sx={{
               position: "absolute",
-              bottom: -20,
+              bottom: -15,
               left: "50%",
               transform: "translateX(-50%)",
               borderRadius: 999,
@@ -100,7 +116,7 @@ export default function ProductCard({
           <Box
             sx={{
               position: "absolute",
-              bottom: -20,
+              bottom: -15,
               left: "50%",
               transform: "translateX(-50%)",
               display: "flex",
@@ -109,6 +125,7 @@ export default function ProductCard({
               borderRadius: 999,
               px: 1.5,
               height: 36,
+              zIndex: 3, 
               backgroundColor: "hsl(14, 86%, 42%)",
             }}
           >
