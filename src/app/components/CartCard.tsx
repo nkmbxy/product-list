@@ -95,7 +95,7 @@ export default function CartCard({ items, onRemove }: CartCardProps) {
           color="hsl(12, 20%, 60%)"
           sx={{ ml: 2 }}
         >
-          ${(item.quantity * item.price).toFixed(2)}
+          <strong>${(item.quantity * item.price).toFixed(2)}</strong>
         </Typography>
       </Box>
     </Box>
